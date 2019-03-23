@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <CtModName>CluTec.Cuda</CtModName>
+    <CtModVerA>2</CtModVerA>
+    <CtModVerB>0</CtModVerB>
+    <CtModVerC>0</CtModVerC>
+    <CtModVerD>0</CtModVerD>
+    <CtDepVer_Global>2.0</CtDepVer_Global>
+    <CtDepVer_CluTecCore>2.0</CtDepVer_CluTecCore>
+    <CtDepVer_CluViz>8.0</CtDepVer_CluViz>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="CtModName">
+      <Value>$(CtModName)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtModVerA">
+      <Value>$(CtModVerA)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtModVerB">
+      <Value>$(CtModVerB)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtModVerC">
+      <Value>$(CtModVerC)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtModVerD">
+      <Value>$(CtModVerD)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtDepVer_Global">
+      <Value>$(CtDepVer_Global)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtDepVer_CluTecCore">
+      <Value>$(CtDepVer_CluTecCore)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CtDepVer_CluViz">
+      <Value>$(CtDepVer_CluViz)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,150 @@
+_BGColor = White;
+_2dView = true;
+
+if (ExecMode & EM_CHANGE)
+{
+	////////////////////////////////////////////////////////////////////////////////////
+	// Rectify Shader
+	Shader_Coloring =
+	{
+		sName = _P(1);
+		
+		sVSCode = @Shader"
+		#version 330
+		
+		/////////////////////////////////////////////////////////////////////
+		// Vertex Shader
+		in vec4 clu_in_vVertex;
+		//in vec4 clu_in_vColor;
+		//in vec4 clu_in_vNormal;
+		in vec4 clu_in_vTex0;
+		//in int clu_in_iPartId;
+			
+		out SVertexData
+		{
+			vec4 vTex;
+		} xVertex;
+		
+		//uniform int clu_iPickedPartId;
+		//uniform int clu_iInPickDrawMode;
+		uniform mat4 clu_matModelViewProjection;
+
+		void main()
+		{
+			xVertex.vTex = clu_in_vTex0;
+			
+			gl_Position = clu_matModelViewProjection * clu_in_vVertex;
+		}
+		";
+
+		/////////////////////////////////////////////////////////////////////
+		// Fragment Shader
+		sFSCode = @Shader"
+		#version 330
+		
+		in SVertexData
+		{
+			vec4 vTex;
+		} xVertex;
+		
+		out vec4 vFragColor;
+		
+		uniform float fBO;
+		uniform float fBS;
+		uniform float fGO;
+		uniform float fGS;
+		uniform float fRO;
+		uniform float fRS;
+		
+		void main()
+		{
+			vec2 vTex = xVertex.vTex.xy;
+			
+			float fValue = vTex.x;
+			float fB = 1.0 - min(abs(fValue - fBO) / fBS, 1.0);
+//			float fB = 1.0 - min(min(abs(fValue - fBO) / fBS, 1.0), min(abs(fValue - 1) / 0.05, 1.0));
+			float fG = 1.0 - min(abs(fValue - fGO) / fGS, 1.0);
+			float fR = 1.0 - min(abs(fValue - fRO) / fRS, 1.0);
+			
+			float fMax = max(max(fR, fG), fB);
+			
+			vFragColor = vec4(fR / fMax, fG / fMax, fB / fMax, 1.0);
+		}
+		";
+		
+		shColoring = Shader("Coloring_" + sName);
+		ShaderBuild( shColoring, [ sVSCode ], [ sFSCode] );
+		
+		shColoring break;
+	}
+
+	shColoring = Shader_Coloring("A");
+	shDef = Shader("Def");
+	
+	fB = 
+	{
+		fValue = _P(1);
+		fVal = 1.0 - min([abs(fValue - ::fBO) / ::fBS, 1.0]);
+//		fVal = 1.0 - min([min([abs(fValue - ::fBO) / ::fBS, 1.0]), min([abs(fValue - 1.0) / 0.05, 1.0])]);
+		fVal break;
+	}
+	
+	fG = 
+	{
+		fValue = _P(1);
+		fVal = 1.0 - min([abs(fValue - ::fGO) / ::fGS, 1.0]);
+		fVal break;
+	}
+	
+	fR = 
+	{
+		fValue = _P(1);
+		fVal = 1.0 - min([abs(fValue - ::fRO) / ::fRS, 1.0]);
+	fVal break;
+	}
+
+	
+}
+
+fBS = Slider("Blue Scale", 0.1, 1.5, 0.01, 0.7);
+fBO = Slider("Blue Offset", 0, 1, 0.01, 0);
+
+fGS = Slider("Green Scale", 0.1, 1.5, 0.01, 0.59);
+fGO = Slider("Green Offset", 0, 1, 0.01, 0.5);
+
+fRS = Slider("Red Scale", 0.1, 1.5, 0.01, 0.7);
+fRO = Slider("Red Offset", 0, 1, 0.01, 0.8);
+
+shColoring("Var", "fBS", fBS);
+shColoring("Var", "fBO", fBO);
+shColoring("Var", "fGS", fGS);
+shColoring("Var", "fGO", fGO);
+shColoring("Var", "fRS", fRS);
+shColoring("Var", "fRO", fRO);
+
+x = 0;
+:Blue;
+:Plot(VecE3(2*x - 1, fB(x),0), [x, 0, 1, 50]);
+
+:Green;
+:Plot(VecE3(2*x - 1, fG(x),0), [x, 0, 1, 50]);
+
+:Red;
+:Plot(VecE3(2*x - 1, fR(x),0), [x, 0, 1, 50]);
+
+TranslateFrame(0, -1.5, 0);
+x = 0;
+:Blue;
+:Plot(VecE3(2*x - 1, fB(x) / max([fB(x), fG(x), fR(x)]),0), [x, 0, 1, 50]);
+
+:Green;
+:Plot(VecE3(2*x - 1, fG(x) / max([fB(x), fG(x), fR(x)]),0), [x, 0, 1, 50]);
+
+:Red;
+:Plot(VecE3(2*x - 1, fR(x) / max([fB(x), fG(x), fR(x)]),0), [x, 0, 1, 50]);
+
+TranslateFrame(0, -1, 0);
+
+:shColoring;
+DrawPlane(VecE3(0, 0), VecE3(2,0), VecE3(0,1));
+:shDef;
